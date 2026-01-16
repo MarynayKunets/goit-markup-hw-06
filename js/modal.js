@@ -1,18 +1,29 @@
 (() => {
-  const refs = {
-    // Додати атрибут data-modal-open,  відкриває модальне вікно
-    openModalBtn: document.querySelector("[data-modal-open]"),
-    // Додати атрибут data-modal-close, закриття модального вікнапш
-    closeModalBtn: document.querySelector("[data-modal-close]"),
-    // Додати атрибут data-modal на бекдроп модалки
-    modal: document.querySelector("[data-modal]"),
+  const openBtn = document.querySelector("[data-modal-open]");
+  const closeBtn = document.querySelector("[data-modal-close]");
+  const backdrop = document.querySelector("[data-modal]");
+
+  if (!openBtn || !closeBtn || !backdrop) return;
+
+  const toggleModal = () => {
+    backdrop.classList.toggle("is-open");
+    document.body.style.overflow = backdrop.classList.contains("is-open")
+      ? "hidden"
+      : "";
   };
 
-  refs.openModalBtn.addEventListener("click", toggleModal);
-  refs.closeModalBtn.addEventListener("click", toggleModal);
+  openBtn.addEventListener("click", toggleModal);
+  closeBtn.addEventListener("click", toggleModal);
 
-  function toggleModal() {
-    // is-open це клас який буде додаватися/забиратися на бекдроп при натисканні на кнопки
-    refs.modal.classList.toggle("is-open");
-  }
+  // Закриття по кліку на бекдроп (поза модалкою)
+  backdrop.addEventListener("click", (e) => {
+    if (e.target === backdrop) toggleModal();
+  });
+
+  // Закриття по Esc
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && backdrop.classList.contains("is-open")) {
+      toggleModal();
+    }
+  });
 })();
